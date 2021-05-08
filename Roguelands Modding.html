@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style>
+			body 
+			{
+				background-color: #212328;
+				color: #E0E0E0;
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 90%
+			}
+			pre code 
+			{
+				background-color: #1C1D20;
+				border: 1px solid #808080;
+				display: block;
+				padding: 20px;
+			}
+			code
+			{
+				background-color: #1c1d20;
+				border: 1px solid #000;
+			}
+			a:link {color: #5ca3ff}
+			a:hover {color: #2685ff}
+			a:visited {color: #905cff}
+			a:active {color: #ff5c5c}
+			
+		</style>
+    </head>
+    <body>
+        <h2>Prerequisites:</h3>
+        <ul>
+            <li> Install GadgetCore from <a href="https://github.com/SuperKael/Gadget-Core/releases/latest" target="_blank">https://github.com/SuperKael/Gadget-Core/releases/latest</a></li>
+            <li> Install Visual Studio Community (2019 or later recommended) from <a href="https://visualstudio.microsoft.com/downloads/" target="_blank">https://visualstudio.microsoft.com/downloads/</a></li>
+            <ul><li> Make sure to install the <code>.NET desktop development</code> module</li></ul>
+        </ul>
+</br>        		
+
+        <h2>Setting up the template mod:</h3>
+        <ol>
+            <li> Decide on a place to keep your mods (e.g. <code>Documents/Roguelands Modding</code>).</li>
+            <li> Go to <a href="https://github.com/SuperKael/Gadget-Core" target="_blank">https://github.com/SuperKael/Gadget-Core</a>, click the <code>Download Code</code> button, then click <code>Download ZIP</code>. Then extract the <code>GadgetCore.xml</code> file inside the <code>Release</code> folder and copy it to the <code>Roguelands_Data/Managed</code> folder in your Roguelands install (which is usually somewhere like <code>C:/Program Files (x86)/Steam/steamapps/common/Roguelands</code>) so it's alongside <code>GadgetCore.dll</code>.</li>
+            <li> From the same zip, extract the folder named <code>TemplateGadgetMod</code> and copy it into your modding folder (so for example your path would be <code>Documents/Roguelands Modding/TemplateGadgetMod</code>.</li>
+            <li> Rename the <code>TemplateGadgetMod</code> folder and the <code>TemplateGadgetMod.cs</code> and <code>TemplateGadgetMod.csproj</code> within, and edit the contents of <code>Manifest.ini</code> to something more appropriate for your mod (e.g. <code>BugFixMod</code>, <code>BugFixMod.cs</code>, <code>BugFixMod.csproj</code>, <code>BugFixMod</code>, <code>BugFixMod.dll</code>).</li>
+            <li> Follow the instruction in the <code>README.txt</code> file inside your mod's folder to set up <code>GamePaths.xml</code>. The <code>ManagedFolder</code> field should be <code>Roguelands_Data/Managed/</code></li>
+            <li> Open Visual Studio and choose <code>Create a new project</code> and select <code>Blank Solution</code>. The <code>Location</code> will be one folder above where you store your mods (e.g. <code>Documents</code>). The <code>Solution Name</code> will be the name for where you store your mods (e.g. <code>Roguelands Modding</code>). This should have the same spelling and capitalization so your solution file appears inside your modding folder. Click <code>Create</code>.</li>
+            <li> There should be a panel named <code>Solution Explorer</code> on the right side of the window (if not, go to <code>View</code> -> <code>Solution Explorer</code>). Right click on the solution you just made in the Solution Explorer and go to <code>Add</code> -> <code>Existing Project...</code> and direct it to the .csproj file in your mod's folder (e.g. <code>Documents/Roguelands Modding/BugFixMod/BugFixMod.csproj</code>).</li>
+            <li> Hit Ctrl+F to open the Find and Replace dialogue, change the tab to <code>Replace in Files</code>, set the <code>Find</code> text to <code>TemplateGadgetMod</code> and the <code>Replace</code> text to your mod's name without spaces (e.g. <code>BugFixMod</code>), then click <code>Replace All</code>. Then change the <code>Find</code> text to <code>Template Gadget Mod</code> and the <code>Replace</code> text to your mod's name (with or without spaces, e.g. <code>BugFixMod</code> or <code>Bug Fix Mod</code>).</li>
+            <li> In the Solution Explorer, expand the <code>Properties</code> folder and double-click <code>AssemblyInfo.cs</code> to edit it. Change all the template stuff.</li>
+        </ol>
+</br>
+		
+        <h2>Creating your first mod</h3>
+        
+        Now that you have your template mod set up you can modify it to do whatever you want.
+</br></br>
+        You can include textures in your mod by creating a folder named <code>Assets</code> in your mod's folder (e.g. <code>BugFixMod/Assets</code>) and dropping .png files in there, then selecting them in the Solution Explorer in Visual Studio and setting <code>Copy To Output Directory</code> to <code>Copy always</code> or <code>Copy if newer</code>. You can then load these textures with <code>GadgetCoreAPI.LoadTexture2D("FileName");</code>
+</br></br>
+        Most "normal" content can be added to the game via GadgetCore without needing to patch, by using GadgetCore's specific methods in your mod's <code>Initialize</code> method. See the examples below.
+</br></br>
+        <b>Items:</b></br>
+        <i>You can change the <code>ItemType</code> to create emblems, usables, armor, etc. <code>swordUseTex</code> here is the item texture that shows in your hand when equipped. The image itself is 64x64px but you mostly want to use the top right of the image; the image is centered on the player's hand. <code>swordInventoryTex</code> is the item texture in your inventory. The image itself is 32x32px but you should generally only use the middle 14x14 to fit in an inventory slot.</i>
+<pre><code>protected override void Initialize()
+{
+    Texture2D swordUseTex = GadgetCoreAPI.LoadTexture2D("SwordUse.png"); // equipped
+    Texture2D swordInventoryTex = GadgetCoreAPI.LoadTexture2D("SwordInventory.png");
+    sword = new ItemInfo(ItemType.WEAPON, "Sword", "Scales with STR + FTH/2", swordInventoryTex, 20, new EquipStats(3, 2, 0, 0, 0, 2), HeldTex: swordUseTex);
+    sword.SetWeaponInfo(new float[6] { 0, 1, 0, 0, 0, 0.5f }, (AudioClip)Resources.Load("au/i/i300")); // scaling and sound
+    sword.Register("Sword");
+    sword.OnAttack += sword.SwingSword; // you can replace this with your own attack coroutine
+}</code></pre>
+        <b>Combat Chips:</b></br>
+		<i>This code goes in the initialize method like in the previous example.</i>
+<pre><code>ChipInfo myChip = new ChipInfo(ChipType.ACTIVE, "Example Chip", "Description here", 8, exampleTexture);
+myChip.Register("Example Chip");
+myChip.OnUse += MyChip_OnUse;
+</code></pre>
+        <b>Ship Tiles:</b>
+<pre><code></code></pre>
+        <b>Enemies:</b>
+<pre><code></code></pre>
+        <b>Planets:</b>
+<pre><code></code></pre>
+        <!-- also: patching, creating unity project, assetbundles, crafters, projectiles, RPCs, coroutines, CIL/transpilers, replacing assets?, menus, config?, github/mod browser?, -->
+    </body>
+</html>
