@@ -67,7 +67,7 @@
 {
     Texture2D swordUseTex = GadgetCoreAPI.LoadTexture2D("SwordUse.png"); // equipped
     Texture2D swordInventoryTex = GadgetCoreAPI.LoadTexture2D("SwordInventory.png");
-    sword = new ItemInfo(ItemType.WEAPON, "Sword", "Scales with STR + FTH/2", swordInventoryTex, 20, new EquipStats(3, 2, 0, 0, 0, 2), HeldTex: swordUseTex);
+    var sword = new ItemInfo(ItemType.WEAPON, "Sword", "Scales with STR + FTH/2", swordInventoryTex, 20, new EquipStats(3, 2, 0, 0, 0, 2), HeldTex: swordUseTex);
     sword.SetWeaponInfo(new float[6] { 0, 1, 0, 0, 0, 0.5f }, (AudioClip)Resources.Load("au/i/i300")); // scaling and sound
     sword.Register("Sword");
     sword.OnAttack += sword.SwingSword; // you can replace this with your own attack coroutine
